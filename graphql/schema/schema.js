@@ -3,7 +3,7 @@ const { buildSchema } = require('graphql');
 module.exports = buildSchema(`
 
 type User {
-    userId: ID!
+    _id: ID!
     firstName: String!
     lastName: String!
     userName: String!
@@ -17,7 +17,7 @@ type User {
   }
 
 type AuthData {
-    userId: ID!
+    _id: ID!
     firstName: String!
     lastName: String!
     userName: String!
@@ -25,17 +25,16 @@ type AuthData {
     companyName: String!
     companyAddress: String!
     telephone: Int!
-    userRole: String!
-    token: String!
-    tokenExpiration: Int!
     createdAt: String!
     updatedAt: String!
+    token: String!
+    tokenExpiration: Int!
   }
 
 type Item {
-    itemId: ID!
+    _id: ID!
     name: String!
-    despriction: String!
+    description: String!
     price: Float!
     image: String!
     createdAt: String!
@@ -56,7 +55,7 @@ input UserInput {
 
 input ItemInput {
     name: String!
-    despriction: String!
+    description: String!
     price: Float!
     image: String!
 }
@@ -64,12 +63,12 @@ input ItemInput {
 type RootQuery {
     items: [Item!]
     users: [User!]
-    login(email: String!, password: String!): AuthData!
+    login(userName: String!, password: String!): AuthData!
 }
 
 type RootMutation {
     signup(userInput: UserInput!): User
-    createItem(item: ItemInput!): Item
+    createItem(itemInput: ItemInput!): Item
 }
 
 schema {

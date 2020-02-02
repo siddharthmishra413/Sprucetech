@@ -1,8 +1,10 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
 
 const { errorName } = require('../../../helper/message_format.helper')
 const User = require('../../../models/user.model');
+// var privateKey = fs.readFileSync('private.key');
 
 module.exports = {
 
@@ -27,7 +29,43 @@ module.exports = {
 
             const result = await user.save();
 
-            return { ...result._doc, password: null, _id: result.id };
+            return result 
+        } catch (err) {
+            throw err
+        }
+    },
+
+    login: async ({ userName, password }) => {
+        try {
+            const user = await User.findOne({ userName: userName }).select('firstName lastName userName password title companyName companyAddress telephone');
+
+            if (!user) {
+                throw new Error(errorName.user_doesnt_exist);
+            }
+            const isEqual = await bcrypt.compare(password, user.password);
+            if (!isEqual) {
+                throw new Error(errorName.user_doesnt_exist);
+            }
+            let token = jwt.sign(user, privateKey, { algorithm: 'ES512' }, { expiresIn: '1h' });
+            // let token = jwt.sign({ user }, 'somesupersecretkey', { expiresIn: '1h' });
+            console.log({...user._doc, token: token, tokenExpiration: 1})
+            return { ...user._doc, token: token, tokenExpiration: 1 };
+        }
+        catch (err) {
+            throw err
+        }
+    },
+
+    users: async (args, req) => {
+        try {
+            // req.isAdmin = true;
+            // req.isAuth = true
+            if (!req.isAuth) throw new Error(errorName.user_unauthorized)
+            if (!req.isAdmin) throw new Error(errorName.user_unauthorized)
+
+            const users = await User.find();
+
+            return users;
         } catch (err) {
             throw err
         }
