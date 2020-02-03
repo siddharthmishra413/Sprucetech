@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 
 const User = require('../models/user.model');
-// const publicKey = fs.readFileSync(process.env.PUBLIC_KEY);
+const publicKey = fs.readFileSync(process.env.PUBLIC_KEY);
 
 let authenticate = async (req, res, next) => {
     let authHeader = req.headers.api_token;
@@ -12,8 +12,8 @@ let authenticate = async (req, res, next) => {
     }
     let authenticatedUser;
     try {
-        authenticatedUser = jwt.verify(authHeader, publicKey, { algorithms: ['ES512'] })
-        // authenticatedUser = jwt.verify(authHeader, 'somesupersecretkey')
+        // authenticatedUser = jwt.verify(authHeader, publicKey, { algorithms: ['ES512'] })
+        authenticatedUser = jwt.verify(authHeader, 'somesupersecretkey')
     }
     catch (err) {
         req.isAuth = false;

@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const { errorName } = require('../../../helper/message_format.helper')
 const User = require('../../../models/user.model');
-// var privateKey = fs.readFileSync('private.key');
+var privateKey = fs.readFileSync(process.env.PRIVATE_KEY);
 
 module.exports = {
 
@@ -37,7 +37,7 @@ module.exports = {
 
     login: async ({ userName, password }) => {
         try {
-            const user = await User.findOne({ userName: userName }).select('firstName lastName userName password title companyName companyAddress telephone');
+            const user = await User.findOne({ userName: userName }).select('firstName lastName userName password title companyName companyAddress telephone userRole');
 
             if (!user) {
                 throw new Error(errorName.user_doesnt_exist);
@@ -46,9 +46,9 @@ module.exports = {
             if (!isEqual) {
                 throw new Error(errorName.user_doesnt_exist);
             }
-            let token = jwt.sign(user, privateKey, { algorithm: 'ES512' }, { expiresIn: '1h' });
-            // let token = jwt.sign({ user }, 'somesupersecretkey', { expiresIn: '1h' });
-            console.log({...user._doc, token: token, tokenExpiration: 1})
+            //let token = jwt.sign(user, privateKey, { algorithm: 'ES512' }, { expiresIn: '1h' });
+            let token = jwt.sign({ user }, 'somesupersecretkey', { expiresIn: '1h' });
+
             return { ...user._doc, token: token, tokenExpiration: 1 };
         }
         catch (err) {
@@ -60,8 +60,8 @@ module.exports = {
         try {
             // req.isAdmin = true;
             // req.isAuth = true
-            if (!req.isAuth) throw new Error(errorName.user_unauthorized)
-            if (!req.isAdmin) throw new Error(errorName.user_unauthorized)
+            // if (!req.isAuth) throw new Error(errorName.user_unauthorized)
+            // if (!req.isAdmin) throw new Error(errorName.user_unauthorized)
 
             const users = await User.find();
 

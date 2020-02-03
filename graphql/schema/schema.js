@@ -25,6 +25,7 @@ type AuthData {
     companyName: String!
     companyAddress: String!
     telephone: Int!
+    userRole: String!
     createdAt: String!
     updatedAt: String!
     token: String!
@@ -49,8 +50,8 @@ input UserInput {
     title: String!
     companyName: String!
     companyAddress: String!
-    telephone: Int!
-    userRole: String!
+    telephone: Float!
+    userRole: String
 }
 
 input ItemInput {
