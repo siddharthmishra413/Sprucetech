@@ -2,7 +2,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 
-const { errorName } = require('../../../helper/message_format.helper')
+const { errorName } = require('../../../helper/message_format.helper');
+const { sendEmail } = require('../../../helper/sendEmail.helper');
 const User = require('../../../models/user.model');
 var privateKey = fs.readFileSync(process.env.PRIVATE_KEY);
 
@@ -29,7 +30,7 @@ module.exports = {
 
             const result = await user.save();
 
-            return result 
+            return result
         } catch (err) {
             throw err
         }
@@ -69,7 +70,41 @@ module.exports = {
         } catch (err) {
             throw err
         }
+    },
+
+
+    forgotPassword: async ({ userName }) => {
+        try {
+            let user = await User.findOne({ userName });
+            if (!user) throw new Error(errorName.user_doesnt_exist);
+            user.refreshTokenForPassword = jwt.sign({ id: user._id }, 'somesupersecretkey', { expiresIn: '1h' });
+            let userData = await user.save();
+            //let html = createHtml(data)
+            // let emaiResolverMessage = await sendEmail(user.userName, html);
+            // if (emaiResolverMessage == 'Email Not Sent') throw new Error(errorName.intrnal_server_error);
+            let data = { message: 'Verification Link has been sent to your email', link: 'http://localhost:3001/reset-password/' + userData.refreshTokenForPassword };
+            return data;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    tokenVerification: async ({ refreshTokenForPassword }) => {
+        try {
+            let user = await User.findOne({ refreshTokenForPassword });
+            if (!user) throw new Error(errorName.user_doesnt_exist)
+            let verification = jwt.verify(refreshTokenForPassword, 'somesupersecretkey');
+            if (!verification) throw new Error(errorName.token_expired);
+            let data = { userName: user.userName, userId: user._id  };
+            return data
+
+        } catch (err) {
+            throw err;
+        }
     }
+}
 
-
+let createHtml = (userData) => {
+    let html = "Hello <strong>" + userData.userName + ",</strong><br><br> Please click on the link to reset your password  <a href='http://localhost:3001/reset-password" + userData.refreshTokenForPassword + "'> http://localhost:3001/reset-password</a>"
+    return html;
 }

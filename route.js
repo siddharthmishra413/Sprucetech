@@ -7,13 +7,11 @@ const graphQlResolvers = require('./graphql/resolvers/main');
 const isAuth = require('./middlewares/authentication.middleware');
 
 let getErrorType = (errorName) => {
-    console.log("------------------->", errorName)
+    console.log(errorName)
     let error = errorType[errorName];
     if (error) {
-        console.log("called-----------------------------", errorType[errorName])
         return errorType[errorName];
     }
-    console.log("calledddddd")
     return { ...errorType.intrnal_server_error, remark: errorName }
 }
 

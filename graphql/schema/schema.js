@@ -42,6 +42,16 @@ type Item {
     updatedAt: String!
 }
 
+type NotificationData {
+    message: String!
+    link: String!
+}
+
+type VerificationData {
+    userName: String!
+    userId: ID!
+}
+
 input UserInput {
     firstName: String!
     lastName: String!
@@ -65,11 +75,13 @@ type RootQuery {
     items: [Item!]
     users: [User!]
     login(userName: String!, password: String!): AuthData!
+    forgotPassword(userName: String!): NotificationData!
 }
 
 type RootMutation {
     signup(userInput: UserInput!): User
     createItem(itemInput: ItemInput!): Item
+    tokenVerification(refreshTokenForPassword: String!): VerificationData!
 }
 
 schema {

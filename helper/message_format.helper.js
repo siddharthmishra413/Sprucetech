@@ -5,7 +5,9 @@ exports.errorName = {
 
     user_doesnt_exist: 'user_doesnt_exist',
 
-    user_unauthorized: 'user_unauthorized'
+    user_unauthorized: 'user_unauthorized',
+
+    token_expired: 'token_expired'
 }
 
 
@@ -14,7 +16,9 @@ exports.errorType = {
 
     duplicate_user_error: { status: 400, message: 'User Already Exist' },
 
-    user_doesnt_exist: {status:404, message: 'User Does Not Exist'},
+    user_doesnt_exist: { status: 404, message: 'User Does Not Exist' },
 
-    user_unauthorized: {status:401, message: 'User Not Authorized'}
+    user_unauthorized: { status: 401, message: 'User Not Authorized' },
+
+    token_expired: { status: 400, message: 'Reset Token Expired' }
 }
