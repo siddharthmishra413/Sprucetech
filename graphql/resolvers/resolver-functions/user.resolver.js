@@ -48,7 +48,7 @@ module.exports = {
                 throw new Error(errorName.user_doesnt_exist);
             }
             //let token = jwt.sign(user, privateKey, { algorithm: 'ES512' }, { expiresIn: '1h' });
-            let token = jwt.sign({ user }, 'somesupersecretkey', { expiresIn: '1h' });
+            let token = jwt.sign({ user }, process.env.SECRET_KEY, { expiresIn: '1h' });
 
             return { ...user._doc, token: token, tokenExpiration: 1 };
         }
@@ -76,7 +76,7 @@ module.exports = {
         try {
             let user = await User.findOne({ userName });
             if (!user) throw new Error(errorName.user_doesnt_exist);
-            user.refreshTokenForPassword = jwt.sign({ id: user._id }, 'somesupersecretkey', { expiresIn: '1h' });
+            user.refreshTokenForPassword = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: '1h' });
             let userData = await user.save();
             //let html = createHtml(data)
             // let emaiResolverMessage = await sendEmail(user.userName, html);
@@ -93,7 +93,7 @@ module.exports = {
             let user = await User.findOne({ refreshTokenForPassword });
             if (!user) throw new Error(errorName.user_doesnt_exist)
 
-            let verification = jwt.verify(refreshTokenForPassword, 'somesupersecretkey');
+            let verification = jwt.verify(refreshTokenForPassword, process.env.SECRET_KEY);
             if (!verification) throw new Error(errorName.token_expired);
 
             let data = { userName: user.userName, userId: user._id };
@@ -106,7 +106,7 @@ module.exports = {
 
     passwordReset: async ({ refreshToken, userId, newPassword }) => {
         try {
-            let verification = jwt.verify(refreshToken, 'somesupersecretkey');
+            let verification = jwt.verify(refreshToken, process.env.SECRET_KEY);
             if (!verification) throw new Error(errorName.token_expired);
 
             const hashedPassword = await bcrypt.hash(newPassword, 12);

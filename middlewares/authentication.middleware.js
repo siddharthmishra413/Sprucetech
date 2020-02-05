@@ -13,7 +13,7 @@ let authenticate = async (req, res, next) => {
     let authenticatedUser;
     try {
         // authenticatedUser = jwt.verify(authHeader, publicKey, { algorithms: ['ES512'] })
-        authenticatedUser = jwt.verify(authHeader, 'somesupersecretkey')
+        authenticatedUser = jwt.verify(authHeader, process.env.SECRET_KEY)
 
     }
     catch (err) {
