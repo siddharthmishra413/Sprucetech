@@ -14,18 +14,20 @@ let authenticate = async (req, res, next) => {
     try {
         // authenticatedUser = jwt.verify(authHeader, publicKey, { algorithms: ['ES512'] })
         authenticatedUser = jwt.verify(authHeader, 'somesupersecretkey')
+
     }
     catch (err) {
         req.isAuth = false;
         return next();
     }
-    let user = await User.findOne({ _id: authenticatedUser._id })
+    let user = await User.findOne({ _id: authenticatedUser.user._id })
+
     if (!user) {
         req.isAuth = false;
         return next();
     }
     req.isAuth = true;
-    
+
     req.isAdmin = false;
     if (user.userRole === 'admin') req.isAdmin = true;
 

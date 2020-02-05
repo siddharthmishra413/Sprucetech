@@ -10,7 +10,7 @@ type User {
     title: String!
     companyName: String!
     companyAddress: String!
-    telephone: Int!
+    telephone: Float!
     userRole: String!
     createdAt: String!
     updatedAt: String!
@@ -52,6 +52,10 @@ type VerificationData {
     userId: ID!
 }
 
+type PasswordResetData{
+    message: String!
+}
+
 input UserInput {
     firstName: String!
     lastName: String!
@@ -82,6 +86,7 @@ type RootMutation {
     signup(userInput: UserInput!): User
     createItem(itemInput: ItemInput!): Item
     tokenVerification(refreshTokenForPassword: String!): VerificationData!
+    passwordReset(refreshToken: String!, userId: ID!, newPassword: String!): PasswordResetData!
 }
 
 schema {

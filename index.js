@@ -22,7 +22,7 @@ databaseConnection();
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, api_token');
     res.setHeader('set-cookie', [
         'same-site-cookie=bar; SameSite=Lax',
         'cross-site-cookie=foo; SameSite=None; Secure',

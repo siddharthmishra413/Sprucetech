@@ -59,12 +59,11 @@ module.exports = {
 
     users: async (args, req) => {
         try {
-            // req.isAdmin = true;
-            // req.isAuth = true
-            // if (!req.isAuth) throw new Error(errorName.user_unauthorized)
-            // if (!req.isAdmin) throw new Error(errorName.user_unauthorized)
+            if (!req.isAuth) throw new Error(errorName.user_unauthorized)
+            if (!req.isAdmin) throw new Error(errorName.user_unauthorized)
 
             const users = await User.find();
+            if (!users) throw new Error(errorName.intrnal_server_error);
 
             return users;
         } catch (err) {
@@ -82,7 +81,7 @@ module.exports = {
             //let html = createHtml(data)
             // let emaiResolverMessage = await sendEmail(user.userName, html);
             // if (emaiResolverMessage == 'Email Not Sent') throw new Error(errorName.intrnal_server_error);
-            let data = { message: 'Verification Link has been sent to your email', link: 'http://localhost:3001/reset-password/' + userData.refreshTokenForPassword };
+            let data = { message: 'Verification Link has been sent to your email', link: '/reset-password/' + userData.refreshTokenForPassword };
             return data;
         } catch (err) {
             throw err;
@@ -93,10 +92,30 @@ module.exports = {
         try {
             let user = await User.findOne({ refreshTokenForPassword });
             if (!user) throw new Error(errorName.user_doesnt_exist)
+
             let verification = jwt.verify(refreshTokenForPassword, 'somesupersecretkey');
             if (!verification) throw new Error(errorName.token_expired);
-            let data = { userName: user.userName, userId: user._id  };
+
+            let data = { userName: user.userName, userId: user._id };
             return data
+
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    passwordReset: async ({ refreshToken, userId, newPassword }) => {
+        try {
+            let verification = jwt.verify(refreshToken, 'somesupersecretkey');
+            if (!verification) throw new Error(errorName.token_expired);
+
+            const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+            let result = await User.findByIdAndUpdate({ _id: userId }, { password: hashedPassword });
+            if (!result) throw new Error(errorName.user_doesnt_exist);
+
+            let data = { message: "Password Updated Successfully" }
+            return data;
 
         } catch (err) {
             throw err;
