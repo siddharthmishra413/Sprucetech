@@ -78,11 +78,11 @@ input ItemInput {
 type RootQuery {
     items: [Item!]
     users: [User!]
-    login(userName: String!, password: String!): AuthData!
     forgotPassword(userName: String!): NotificationData!
 }
 
 type RootMutation {
+    login(userName: String!, password: String!): AuthData!
     signup(userInput: UserInput!): User
     createItem(itemInput: ItemInput!): Item
     tokenVerification(refreshTokenForPassword: String!): VerificationData!
