@@ -35,12 +35,12 @@ const userSchema = new Schema({
         type: Number,
         required: true
     },
-    userRole: {
+    userRole: [{
         type: String,
         enum: ['user', 'juror', 'admin'],
         default: 'user',
         required: true
-    },
+    }],
     refreshTokenForPassword: {
         type: String,
         required: false

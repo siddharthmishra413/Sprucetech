@@ -29,7 +29,7 @@ let authenticate = async (req, res, next) => {
     req.isAuth = true;
 
     req.isAdmin = false;
-    if (user.userRole === 'admin') req.isAdmin = true;
+    if (user.userRole.includes('admin')) req.isAdmin = true;
 
     return next();
 };
