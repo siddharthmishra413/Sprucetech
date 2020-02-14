@@ -2,6 +2,10 @@ const { buildSchema } = require('graphql');
 
 module.exports = buildSchema(`
 
+type Role {
+    role: String!
+}
+
 type User {
     _id: ID!
     firstName: String!
@@ -11,7 +15,7 @@ type User {
     companyName: String!
     companyAddress: String!
     telephone: Float!
-    userRole: String!
+    userRole: [Role]
     createdAt: String!
     updatedAt: String!
   }
@@ -25,7 +29,7 @@ type AuthData {
     companyName: String!
     companyAddress: String!
     telephone: Int!
-    userRole: String!
+    userRole: [Role!]
     createdAt: String!
     updatedAt: String!
     token: String!
@@ -65,7 +69,6 @@ input UserInput {
     companyName: String!
     companyAddress: String!
     telephone: Float!
-    userRole: String
 }
 
 input ItemInput {
@@ -78,7 +81,6 @@ input ItemInput {
 type RootQuery {
     items: [Item!]
     users: [User!]
-    forgotPassword(userName: String!): NotificationData!
 }
 
 type RootMutation {
@@ -87,6 +89,7 @@ type RootMutation {
     createItem(itemInput: ItemInput!): Item
     tokenVerification(refreshTokenForPassword: String!): VerificationData!
     passwordReset(refreshToken: String!, userId: ID!, newPassword: String!): PasswordResetData!
+    forgotPassword(userName: String!): NotificationData!
 }
 
 schema {
