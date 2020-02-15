@@ -67,7 +67,6 @@ module.exports = {
     try {
       if (!req.isAuth) throw new Error(errorName.user_unauthorized);
       if (!req.isAdmin) throw new Error(errorName.user_unauthorized);
-      console.log("Im being called");
 
       const users = await User.find();
       if (!users) throw new Error(errorName.intrnal_server_error);

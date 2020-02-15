@@ -5,7 +5,6 @@ const User = require("../models/user.model");
 const publicKey = fs.readFileSync(process.env.PUBLIC_KEY);
 
 let authenticate = async (req, res, next) => {
-  console.log("called");
   let authHeader = req.headers.api_token;
 
   if (!authHeader) {
