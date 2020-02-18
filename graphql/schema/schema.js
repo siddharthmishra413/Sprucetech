@@ -18,6 +18,7 @@ type User {
     userRole: [Role]
     createdAt: String!
     updatedAt: String!
+    role: [String]
   }
 
 type AuthData {
@@ -60,6 +61,11 @@ type PasswordResetData{
     message: String!
 }
 
+type RoleUser {
+    _id: ID!
+    role: String!
+}
+
 input UserInput {
     firstName: String!
     lastName: String!
@@ -78,10 +84,16 @@ input ItemInput {
     image: String!
 }
 
+input RoleInput {
+    role: String!
+}
+
 type RootQuery {
     items: [Item!]
     users: [User!]
     tokenVerification(refreshTokenForPassword: String!): VerificationData!
+    roles: [RoleUser!],
+    userDetail(id: ID!): User
 }
 
 type RootMutation {
@@ -90,6 +102,7 @@ type RootMutation {
     createItem(itemInput: ItemInput!): Item
     passwordReset(refreshToken: String!, userId: ID!, newPassword: String!): PasswordResetData!
     forgotPassword(userName: String!): NotificationData!
+    createRole(roleInput: RoleInput!): RoleUser
 }
 
 schema {

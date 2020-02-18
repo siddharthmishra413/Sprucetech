@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
 
+const roleResolver = require("./role.resolver");
 const { errorName } = require("../../../helper/message_format.helper");
 const { sendEmail } = require("../../../helper/sendEmail.helper");
 const User = require("../../../models/user.model");
@@ -17,8 +18,11 @@ module.exports = {
         throw new Error(errorName.duplicate_user_error);
       }
       const hashedPassword = await bcrypt.hash(args.userInput.password, 12);
+
       const userRole = [];
+
       userRole.push({ role: "user" });
+
       const user = new User({
         firstName: args.userInput.firstName,
         lastName: args.userInput.lastName,
@@ -61,6 +65,14 @@ module.exports = {
     } catch (err) {
       throw err;
     }
+  },
+
+  userDetail: async (args, req) => {
+    const user = await User.findOne({ _id: args.id });
+    if (!user) throw new Error(errorName.user_doesnt_exist);
+    let rolesArray = await roleResolver.roles();
+    user.role = rolesArray.map(element => element.role);
+    return user;
   },
 
   users: async (args, req) => {
